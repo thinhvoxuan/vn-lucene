@@ -1,4 +1,4 @@
-package vn.hus.nlp.tokenizer;
+package com.younet.social.analysis;
 
 import java.io.BufferedWriter;
 import java.io.FileOutputStream;
@@ -21,6 +21,9 @@ import vn.hus.nlp.fsm.IConstants;
 import vn.hus.nlp.lexicon.LexiconUnmarshaller;
 import vn.hus.nlp.lexicon.jaxb.Corpus;
 import vn.hus.nlp.lexicon.jaxb.W;
+import vn.hus.nlp.tokenizer.ITokenizerListener;
+import vn.hus.nlp.tokenizer.ResultMerger;
+import vn.hus.nlp.tokenizer.ResultSplitter;
 import vn.hus.nlp.tokenizer.io.Outputer;
 import vn.hus.nlp.tokenizer.segmenter.Segmenter;
 import vn.hus.nlp.tokenizer.tokens.LexerRule;
@@ -34,7 +37,7 @@ import vn.hus.nlp.utils.UTF8FileUtility;
  * The Vietnamese tokenizer.
  */
 
-public class Tokenizer  {
+public class CustomTokenizerVn  {
 
 	/**
 	 * List of rules for this lexer
@@ -95,7 +98,7 @@ public class Tokenizer  {
 	 * @param lexersFilename the file that contains lexer rules 
 	 * @param segmenter a lexical segmenter<ol></ol>
 	 */
-	public Tokenizer(String lexersFilename, Segmenter segmenter) {
+	public CustomTokenizerVn(String lexersFilename, Segmenter segmenter) {
 		// load the lexer rules
 		loadLexerRules(lexersFilename);
 		this.segmenter = segmenter;
@@ -119,7 +122,7 @@ public class Tokenizer  {
 	 * @param properties
 	 * @param segmenter
 	 */
-	public Tokenizer(Properties properties, Segmenter segmenter) {
+	public CustomTokenizerVn(Properties properties, Segmenter segmenter) {
 		// load the lexer rules
 		loadLexerRules(properties.getProperty("lexers"));
 		this.segmenter = segmenter;

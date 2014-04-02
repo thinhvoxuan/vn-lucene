@@ -49,7 +49,6 @@ public class AnalyzerUtils {
 	}
 
 	public static void main(String[] args) throws IOException {
-		AnalyzerUtils.displayTokensWithFullDetails(new WhitespaceAnalyzer(
-				Version.LUCENE_47), input);
+		AnalyzerUtils.displayTokensWithFullDetails(new CustomKeywordAnalyzer(), input);
 	}
 }

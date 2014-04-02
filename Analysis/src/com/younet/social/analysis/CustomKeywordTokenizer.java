@@ -67,6 +67,7 @@ public final class CustomKeywordTokenizer extends Tokenizer {
 			while (true) {
 				final int length = input.read(buffer, upto, buffer.length
 						- upto);
+				System.out.println("---" + new String(buffer) + "[" + buffer.length + "]" + "---\n\n\n");
 				if (length == -1)
 					break;
 				upto += length;

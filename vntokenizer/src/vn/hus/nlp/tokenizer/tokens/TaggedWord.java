@@ -172,9 +172,9 @@ public class TaggedWord implements Comparable<TaggedWord> {
 	 */
 	@Override
 	public String toString() {
-		// return "[\"" + text + "\"" + " at (" + line + "," + column + ")]";
-		// return rule.getName() + ": " + text;
-		return text.trim();
+//		 return "[\"" + text + "\"" + " at (" + line + "," + column + ")]";
+		 return rule.getName() + ": " + text;
+//		return text.trim();
 	}
 
 	/* (non-Javadoc)
