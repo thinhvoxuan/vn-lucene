@@ -212,6 +212,7 @@ public class Tokenizer  {
 		while (true) {
 			// get the next token
 			TaggedWord taggedWord = getNextToken();
+			System.out.println("\n\ntaggedword= " + taggedWord);
 			// stop if there is no more token
 			if (taggedWord == null) {
 				break;
@@ -221,9 +222,11 @@ public class Tokenizer  {
 			// if this token is a phrase, we need to use a segmenter
 			// object to segment it.
 			if (taggedWord.isPhrase()) {
-//				System.out.println("taggedWord phrase = " + taggedWord);
+				System.out.println("isPhrase");
+				//System.out.println("taggedWord phrase = " + taggedWord);
 				String phrase = taggedWord.getText().trim();
 				if (!isSimplePhrase(phrase)) {
+					System.out.println("not Simple phrase");
 					String[] tokens = null;
 					// segment the phrase
 					List<String[]> segmentations = segmenter.segment(phrase);
@@ -247,45 +250,44 @@ public class Tokenizer  {
 					}
 					
 					// build tokens of the segmentation
-					for (int j = 0; j < tokens.length; j++) {
-						
+					for (int j = 0; j < tokens.length; j++) {						
 						WordToken token = new WordToken(
 								new LexerRule("word"), tokens[j], lineReader.getLineNumber(), column);
-						System.out.println(token);
+						System.out.println("split phrase: " + token);
 						result.add(token);
 						column += tokens[j].length();
 					}
 				} else { // phrase is simple
 					if (phrase.length() > 0)
-						System.out.println(taggedWord);
+						System.out.println("simple phrase:  " + taggedWord);
 						result.add(taggedWord);
 				}
 			} else { // lexerToken is not a phrase
 				// check to see if it is a named entity
 				if (taggedWord.isNamedEntity()) {
 					// try to split the lexer into two lexers
+					System.out.println("isEntity");
 					TaggedWord[] tokens = resultSplitter.split(taggedWord);
-					
 					if (tokens != null) {
 						for (TaggedWord token : tokens) {
-							System.out.println(token);
+							System.out.println("split phrase: " + token);
 							result.add(token);
 						}
 					} else {
-						System.out.println(taggedWord);
+						System.out.println("notsplit phrase" + taggedWord);
 						result.add(taggedWord);
 					}
 				} else {
 					// we simply add it into the list
 					if (taggedWord.getText().trim().length() > 0) {
-						System.out.println(taggedWord);
+						System.out.println("other type " + taggedWord);
 						result.add(taggedWord);
 					}
 				}
 			}
 			// ok, the token has been processed,
 			// it is now reported to all registered listeners
-			fireProcess(taggedWord);
+			//fireProcess(taggedWord);
 		}
 		// close the line reader
 		if (lineReader != null)
@@ -293,7 +295,6 @@ public class Tokenizer  {
 		// merge the result
 		result = resultMerger.mergeList(result);
 	}
-
 
 	/**
 	 * Tokenize a file.
