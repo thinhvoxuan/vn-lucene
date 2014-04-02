@@ -241,12 +241,14 @@ public class Tokenizer  {
 							tokens = it.next();
 						} 
 					}
+					
 					if (tokens == null) {
 						logger.log(Level.WARNING, "Problem: " + phrase);
 					}
 					
 					// build tokens of the segmentation
 					for (int j = 0; j < tokens.length; j++) {
+						System.out.println(String.format("Token[ %d ]: %s", j, tokens[j]).toString());
 						WordToken token = new WordToken(
 								new LexerRule("word"), tokens[j], lineReader.getLineNumber(), column);
 						result.add(token);
