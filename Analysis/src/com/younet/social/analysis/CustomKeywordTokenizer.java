@@ -19,6 +19,8 @@ package com.younet.social.analysis;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -29,6 +31,7 @@ import org.apache.lucene.analysis.tokenattributes.TypeAttribute;
 
 import vn.hus.nlp.sd.SentenceDetector;
 import vn.hus.nlp.sd.SentenceDetectorFactory;
+import vn.hus.nlp.tokenizer.TokenizerOptions;
 import vn.hus.nlp.tokenizer.TokenizerProvider;
 import vn.hus.nlp.tokenizer.tokens.TaggedWord;
 
@@ -44,16 +47,14 @@ public final class CustomKeywordTokenizer extends Tokenizer {
 	private final CharTermAttribute termAtt = addAttribute(CharTermAttribute.class);
 	private OffsetAttribute offsetAtt = addAttribute(OffsetAttribute.class);
 	private TypeAttribute type = addAttribute(TypeAttribute.class);
-	
-	private static vn.hus.nlp.tokenizer.Tokenizer vntoken;
-	private static SentenceDetector sentenceDetector;
-	private List<TaggedWord> list;
+
+	private static vn.hus.nlp.tokenizer.Tokenizer vntoken = null;
+	private static SentenceDetector sentenceDetector = null;
+	private List<TaggedWord> list = new ArrayList<TaggedWord>();
 	private Iterator<TaggedWord> element;
 
 	private int start = 0, end = 0;
-	
-	
-	
+
 	public CustomKeywordTokenizer(Reader input) {
 		this(input, DEFAULT_BUFFER_SIZE);
 	}
@@ -76,28 +77,35 @@ public final class CustomKeywordTokenizer extends Tokenizer {
 		termAtt.resizeBuffer(bufferSize);
 		initVnTokenizer(input);
 	}
-	
-	public void initVnTokenizer(Reader input){
+
+	public void initVnTokenizer(Reader input) {
 		vntoken = TokenizerProvider.getInstance().getTokenizer();
 		sentenceDetector = SentenceDetectorFactory.create("vietnamese");
 		try {
-			vntoken.tokenize(input);
+			String[] sentences = sentenceDetector.detectSentences(input);
+			for (String s : sentences) {
+				vntoken.tokenize(new StringReader(s));
+				List<TaggedWord> listTag = vntoken.getResult();
+				for (TaggedWord taggedWord : listTag) {
+					list.add(taggedWord);
+				}
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		list = vntoken.getResult();
 		element = list.iterator();
 	}
 
 	@Override
 	public final boolean incrementToken() throws IOException {
-		//TODO writing method here
-		if(element.hasNext()){
+		// TODO writing method here
+		if (element.hasNext()) {
 			clearAttributes();
 			TaggedWord word = element.next();
 			termAtt.append(word.getText());
 			type.setType(word.getRule().getName());
-			end = start + word.getText().length();			
+			end = start + word.getText().length();
+			System.out.println(word.getColumn());
 			offsetAtt.setOffset(correctOffset(start), correctOffset(end));
 			start = end;
 			return true;
