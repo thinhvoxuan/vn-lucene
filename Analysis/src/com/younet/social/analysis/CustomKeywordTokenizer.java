@@ -31,7 +31,6 @@ import org.apache.lucene.analysis.tokenattributes.TypeAttribute;
 
 import vn.hus.nlp.sd.SentenceDetector;
 import vn.hus.nlp.sd.SentenceDetectorFactory;
-import vn.hus.nlp.tokenizer.TokenizerOptions;
 import vn.hus.nlp.tokenizer.TokenizerProvider;
 import vn.hus.nlp.tokenizer.tokens.TaggedWord;
 
@@ -40,7 +39,7 @@ import vn.hus.nlp.tokenizer.tokens.TaggedWord;
  */
 public final class CustomKeywordTokenizer extends Tokenizer {
 	/** Default read buffer size */
-	public static final int DEFAULT_BUFFER_SIZE = 256;
+	public static final int DEFAULT_BUFFER_SIZE = 1024;
 
 	private boolean done = false;
 	private int finalOffset;
@@ -50,8 +49,10 @@ public final class CustomKeywordTokenizer extends Tokenizer {
 
 	private static vn.hus.nlp.tokenizer.Tokenizer vntoken = null;
 	private static SentenceDetector sentenceDetector = null;
-	private List<TaggedWord> list = new ArrayList<TaggedWord>();
+	private List<TaggedWord> listTaggedWord = new ArrayList<TaggedWord>();
+	private Iterator<String> listSentence;
 	private Iterator<TaggedWord> element;
+	
 
 	private int start = 0, end = 0;
 
@@ -85,15 +86,15 @@ public final class CustomKeywordTokenizer extends Tokenizer {
 			String[] sentences = sentenceDetector.detectSentences(input);
 			for (String s : sentences) {
 				vntoken.tokenize(new StringReader(s));
-				List<TaggedWord> listTag = vntoken.getResult();
-				for (TaggedWord taggedWord : listTag) {
-					list.add(taggedWord);
+				List<TaggedWord> listResult = vntoken.getResult();
+				for (TaggedWord taggedWord : listResult) {
+					listTaggedWord.add(taggedWord);
 				}
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		element = list.iterator();
+		element = listTaggedWord.iterator();
 	}
 
 	@Override
